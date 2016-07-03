@@ -1,7 +1,7 @@
 {
   "name": "term-canvas",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "A canvas-style drawing library for javascript in the terminal.",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -15,6 +15,23 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Drew Harwell",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fenwick67/term-canvas.git"
+  },
+  "keywords": [
+    "terminal",
+    "tty",
+    "canvas",
+    "drawing",
+    "image",
+    "cli",
+    "color"
+  ],
+  "bugs": {
+    "url": "https://github.com/fenwick67/term-canvas/issues"
+  },
+  "homepage": "https://github.com/fenwick67/term-canvas#readme"
 }
