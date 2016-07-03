@@ -1,6 +1,6 @@
 {
-  "name": "term-canvas",
-  "version": "0.0.1",
+  "name": "burlap-canvas",
+  "version": "0.0.2",
   "description": "A canvas-style drawing library for javascript in the terminal.",
   "main": "index.js",
   "directories": {
@@ -31,7 +31,7 @@
     "color"
   ],
   "bugs": {
-    "url": "https://github.com/fenwick67/term-canvas/issues"
+    "url": "https://github.com/fenwick67/burlap-canvas/issues"
   },
-  "homepage": "https://github.com/fenwick67/term-canvas#readme"
+  "homepage": "https://github.com/fenwick67/burlap-canvas#readme"
 }
