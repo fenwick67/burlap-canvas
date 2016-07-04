@@ -7,6 +7,9 @@ implement canvas methods
 var ansiEscapes = require('ansi-escapes');
 var termPx = require('term-px'); 
 
+var BLOCK = String.fromCharCode(9608);
+var ESC = String.fromCharCode(27);
+var RESET = ESC + '[0m';
 //output needs these methods:
 
 //write
@@ -40,20 +43,33 @@ function Canvas(output){
   
   this.fillStyle = 'bgBlack';
   this.textStyle = 'white';
-  this._charStyle = function(){
-
-    var bg = getBgTagPair(canvas.fillStyle);
-    var fg = getFgTagPair(canvas.textStyle);
-    
-    //todo: split fillStyle / textStyle by . and apply chalk styles
+  this.lineStyle = 'white';
+  
+  this._charStyle = function(text,fill){    
+    var bg = getBgTagPair(fill||canvas.fillStyle);
+    var fg = getFgTagPair(text||canvas.textStyle);
     return [fg[0] + bg[0],fg[1] + bg[1]];
   }
+  
+  this._getLineCharacter = function(){
+    // get character for lines
+    if (canvas.lineStyle === 'white.bright' || canvas.lineStyle === 'bright.white'){
+      // white is magical... it is 
+      var st = canvas._charStyle('white.bright','white');
+      return st[0] + BLOCK + st[1];
+    }
+    // otherwier, get same line and bg style
+    var st = canvas._charStyle(canvas.lineStyle,canvas.lineStyle);
+    return st[0] + BLOCK + st[1];    
+    
+  }
+  
   
   function applyStyle(str){
     //apply current style to str
     var cs = canvas._charStyle();
     return cs[0] + str + cs[1];
-  }  
+  }
   
   this.fillRect = function(x,y,width,height,text){//text is optional
     
@@ -80,6 +96,41 @@ function Canvas(output){
     //toWrite = toWrite + (ansiEscapes.cursorTo(x,y));
     
     output.write(applyStyle(toWrite));//flush it down the pipe 
+  }
+  
+  this.drawRect = function(x,y,width,height){
+    var x2 = width + x - 1;
+    var y2 = height + y - 1;
+    canvas.drawLine(x,y,x2,y);//top
+    canvas.drawLine(x,y2,x2,y2);//bottom
+    
+    canvas.drawLine(x,y2-1,x,y+1);//left
+    canvas.drawLine(x2,y2-1,x2,y+1);//right 
+    
+  }
+  
+  this.drawLine = function(x1,y1,x2,y2){
+    //only vertical or horizontal lines
+    var toWrite = '';
+    if (y1 == y2){// horizontal
+      var left = Math.min(x1,x2);
+      var right = Math.max(x1,x2);      
+      toWrite = ansiEscapes.cursorTo(left,y1) + repeat(canvas._getLineCharacter(),(right-left)+1);      
+    }
+    else if (x1 == x2){// vertical
+      var top = Math.min(y1,y2);
+      var bottom = Math.max(y1,y2);      
+      toWrite = ansiEscapes.cursorTo(0,top) + repeat(ansiEscapes.cursorForward(x1) + canvas._getLineCharacter() + '\r\n',(bottom-top)+1);
+    }else{
+      return;// I don't do diagonal lines.
+    }
+    
+    output.write(toWrite);
+  }
+  
+  //draw a line from here to here :P
+  this.drawPoint = function(x,y){
+    return canvas.drawLine(x,y,x,y);
   }
   
   this.drawImage = function(x,y,width,height,imageData){// imageData is an iterable thing in RGBA format.  Width and height are in PX and not in Chars!
