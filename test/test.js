@@ -1,5 +1,5 @@
 //test
-var image = [
+var invader = [
   255,255,000,255,
   255,255,000,255,
   255,255,000,255,
@@ -36,13 +36,79 @@ var image = [
   000,255,255,255,
   000,255,255,255,
   
-  000,255,255,255,
+  255,255,000,255,
   255,255,000,255,
   000,255,255,255,
   255,255,000,255,
   000,255,255,255,
   255,255,000,255,
   000,255,255,255,
+  255,255,000,255,
+  
+  255,255,000,255,
+  255,255,000,255,
+  000,255,255,255,
+  255,255,000,255,
+  000,255,255,255,
+  255,255,000,255,
+  000,255,255,255,
+  255,255,000,255
+]
+
+
+var invader2 = [
+  255,255,000,255,
+  255,255,000,255,
+  255,255,000,255,
+  000,255,255,255,
+  000,255,255,255,
+  255,255,000,255,
+  255,255,000,255,
+  255,255,000,255,
+  
+  255,255,000,255,
+  255,255,000,255,
+  000,255,255,255,
+  000,255,255,255,
+  000,255,255,255,
+  000,255,255,255,
+  255,255,000,255,
+  255,255,000,255,
+  
+  255,255,000,255,
+  000,255,255,255,
+  100,000,000,255,
+  000,255,255,255,
+  000,255,255,255,
+  100,000,000,255,
+  000,255,255,255,
+  255,255,000,255,
+  
+  000,255,255,255,
+  000,255,255,255,
+  000,255,255,255,
+  000,255,255,255,
+  000,255,255,255,
+  000,255,255,255,
+  000,255,255,255,
+  000,255,255,255,
+  
+  255,255,000,255,
+  000,255,255,255,
+  255,255,000,255,
+  000,255,255,255,
+  255,255,000,255,
+  000,255,255,255,
+  255,255,000,255,
+  255,255,000,255,
+  
+  255,255,000,255,
+  000,255,255,255,
+  255,255,000,255,
+  000,255,255,255,
+  255,255,000,255,
+  000,255,255,255,
+  255,255,000,255,
   255,255,000,255
 ]
 
@@ -75,36 +141,41 @@ function showAll(selected){
  
 function showStatic(){
   
+  ctx.fillStyle = 'red';
+  ctx.fillRect(0,0,ctx.getWidth() -1,ctx.getHeight());// fixing this is a TODO item.  You should be able to fill the whole screen.
+  
   ctx.textStyle = "bright.red";
   ctx.fillStyle = 'bright.cyan';
   ctx.fillRect(1,7,24,5,"Hit 'Enter', then press 'A' or 'S' to select.  C to exit. ");
   
-  ctx.lineStyle = 'red';
+  ctx.lineStyle = 'bright.red';
   ctx.drawRect(0,6,26,7);
   
   ctx.lineStyle = 'bright.white';
   ctx.drawLine(0,6,25,6);
-  
-  ctx.drawImage(9,0,8,5,image);
-  
+    
   var cols = ['white','red','yellow','green','cyan','blue','magenta','black'];
   var h = 13;
   cols.forEach(function(col){
     ctx.lineStyle=col;
+    ctx.drawPoint(29,h);
     ctx.drawLine(0,h,25,h);
     h++;
     ctx.lineStyle='bright.'+col;
-    ctx.drawPoint(5,h-1);
+    ctx.drawPoint(28,h);
     ctx.drawLine(0,h,25,h);
     h++
   });
   
+  ctx.textStyle = "white";
+  ctx.fillStyle = 'blue';
+  ctx.lineStyle = 'bright.white';
+  ctx.drawBorderedRect(30,0,20,10,"This is a bordered rectangle right mhea");  
   
 }
  
 var times = 0;
-function showMenu(selected){
-    
+function showMenu(selected){    
   ctx.textStyle = selected?'blue':"bright.blue";
   ctx.fillStyle = selected?'green':'green.bright';
   ctx.fillRect(1,1,5,5,"PICK ME");
@@ -118,3 +189,11 @@ function showMenu(selected){
 
 showAll(false);
 
+var frame = false;
+function animateInvader(){
+  frame = !frame
+  ctx.drawImage(9,0,8,5,frame?invader:invader2); 
+  ctx.moveTo(ctx.getWidth() - 10,ctx.getHeight() - 2); 
+}
+animateInvader();
+setInterval(animateInvader,1000);

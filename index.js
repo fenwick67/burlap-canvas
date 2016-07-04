@@ -105,22 +105,42 @@ function Canvas(output){
     canvas.drawLine(x,y2,x2,y2);//bottom
     
     canvas.drawLine(x,y2-1,x,y+1);//left
-    canvas.drawLine(x2,y2-1,x2,y+1);//right 
+    canvas.drawLine(x2,y2-1,x2,y+1);//right  
+  }
+  
+  // TODO make the top/bottom borders with termPx
+  this.drawBorderedRect = function(x,y,width,height,text){
+    //inner part is easy peasy
+    canvas.fillRect(x+1,y+1,width-2,height-2,text);
+    
+    //draw left and right borders
+    var x2 = width + x - 1;
+    var y2 = height + y - 1;
+    canvas.drawLine(x,y,x,y2);
+    canvas.drawLine(x2,y,x2,y2);   
+    
+    var st = canvas._charStyle(canvas.lineStyle,canvas.fillStyle);
+    var topChar = String.fromCharCode(9600);    
+    var bottomChar = String.fromCharCode(9604);
+    
+    
+    canvas.drawLine(x+1,y,x2-1,y,st[0] + topChar + st[1]);
+    canvas.drawLine(x+1,y2,x2-1,y2,st[0] + bottomChar + st[1]);
     
   }
   
-  this.drawLine = function(x1,y1,x2,y2){
+  this.drawLine = function(x1,y1,x2,y2,character){
     //only vertical or horizontal lines
     var toWrite = '';
     if (y1 == y2){// horizontal
       var left = Math.min(x1,x2);
       var right = Math.max(x1,x2);      
-      toWrite = ansiEscapes.cursorTo(left,y1) + repeat(canvas._getLineCharacter(),(right-left)+1);      
+      toWrite = ansiEscapes.cursorTo(left,y1) + repeat(character||canvas._getLineCharacter(),(right-left)+1);      
     }
     else if (x1 == x2){// vertical
       var top = Math.min(y1,y2);
       var bottom = Math.max(y1,y2);      
-      toWrite = ansiEscapes.cursorTo(0,top) + repeat(ansiEscapes.cursorForward(x1) + canvas._getLineCharacter() + '\r\n',(bottom-top)+1);
+      toWrite = ansiEscapes.cursorTo(0,top) + repeat(ansiEscapes.cursorForward(x1) + (character||canvas._getLineCharacter()) + '\r\n',(bottom-top)+1);
     }else{
       return;// I don't do diagonal lines.
     }
